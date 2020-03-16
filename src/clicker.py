@@ -17,7 +17,7 @@ stop = False
 
 mouse_controller = mouse.Controller()
 
-long_sleep_secs = 10
+long_sleep_secs = 5
 
 
 # A thread that does the clicking
@@ -70,7 +70,7 @@ def click_mouse(controller):
     controller.press(mouse.Button.left)
 
     # sleep a random time between press and release
-    time.sleep(0.06 + (random.random() - 0.5) / 50)
+    time.sleep(0.08 + (random.random() - 0.5) / 50)
 
     # release mouse button
     controller.release(mouse.Button.left)
@@ -80,6 +80,7 @@ def click_mouse(controller):
 def move_mouse(controller, click):
     # move the cursor to the position
     controller.position = (click.x, click.y)
+    time.sleep(random.random() / 40 + 0.01)
 
 
 # repeat the clicks until 'stop' is called
@@ -95,21 +96,19 @@ def do_clicks():
         if paused:
             time.sleep(1)
         else:
+            time.sleep(clicks[i].delay + (random.random() - 0.5) / 5)
+
             move_mouse(mouse_controller, clicks[i])
 
             click_mouse(mouse_controller)
 
-            time.sleep(clicks[i].delay + (random.random() - 0.5) / 2)
-
-            # move on to the next click
             i += 1
             if i >= len(clicks):
                 i %= len(clicks)
                 # if we've completed a cycle, sleep a longer amount
-                long_sleep = long_sleep_secs + random.random() * 20
+                long_sleep = long_sleep_secs + random.random() * 3
                 print("sleeping for: " + str(long_sleep))
                 time.sleep(long_sleep)
-
 
 
 mouse_listener = mouse.Listener(on_click=on_click)
